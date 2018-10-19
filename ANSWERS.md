@@ -7,3 +7,4 @@
 3. What does bcrypt do to slow down attackers?
    it adds salt, which is a way to "sprinkle" in random data to our hashes so that it increases the security of our hash.
 4. What are the three parts of the JSON Web Token?
+   the three parts are the header, the payload, and the signature.
