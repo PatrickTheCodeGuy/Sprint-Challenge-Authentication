@@ -1,7 +1,7 @@
 const axios = require("axios");
 const bcrypt = require("bcryptjs");
 const { authenticate } = require("./middlewares");
-const jwtSecret = require("../_secrets/keys");
+const jwtSecret = require("../_secrets/keys").jwtKey;
 const db = require("../database/dbConfig");
 const jwt = require("jsonwebtoken");
 
@@ -13,7 +13,7 @@ module.exports = server => {
 
 function generateToken(user) {
 	const payload = {
-		...user.username,
+		...user,
 		hello: "Hello!"
 	};
 
@@ -21,7 +21,7 @@ function generateToken(user) {
 		expiresIn: "10m"
 	};
 
-	return jwt.sign(payload, jwtSecret.jwtKey, JwtOptions);
+	return jwt.sign(payload, jwtSecret, JwtOptions);
 }
 
 function register(req, res) {
@@ -32,7 +32,7 @@ function register(req, res) {
 	db("users")
 		.insert(credentials)
 		.then(ids => {
-			const token = generateToken(credentials);
+			const token = generateToken({ username: credentials.username });
 			res.status(201).json({ ids: ids[0], token });
 		})
 		.catch(err => {
